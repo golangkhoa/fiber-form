@@ -7,8 +7,8 @@
 
 ## Try it
 
-To try it for yourself, make sure you have git and go installed on your system. Once that is done, use the following commands:
+To try it for yourself, use the following commands:
 
     git clone https://github.com/golangkhoa/fiber-form.git
 
-    cd fiber-form/ ; go run .
+    cd fiber-form/ ; ./fiber-form
