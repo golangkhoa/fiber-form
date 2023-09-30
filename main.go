@@ -22,7 +22,7 @@ func main() {
 		Views: engine,
 	})
 	db, err := sql.Open("sqlite3", "user.db")
-	readDB, err := gorm.Open(sqlite.Open("user.db"), &gorm.Config{})
+	readDB, errDB := gorm.Open(sqlite.Open("user.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -59,6 +59,14 @@ func main() {
 
 		return c.Render("login", fiber.Map{})
 	})
+
+	if errDB == gorm.ErrRecordNotFound {
+		app.Get("/success", func(c *fiber.Ctx) error {
+			return c.Render("successful", fiber.Map{})
+		})
+	} else if errDB != nil {
+		fmt.Println(errDB)
+	}
 	
 	app.Listen(":3000")
 	db.Close()
