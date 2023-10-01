@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Form test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+        h1 {
+            font-size: 42px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        label {
+            font-size: 24px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }
+
+        input[type=text], input[type=password] {
+            width: 25%;
+            padding: 15px;
+            margin: 5px 80% 15px 0;
+            display: inline-block;
+            border: none;
+            background: #f1f1f1;
+        }
+
+        button {
+            background-color: #04AA6D;
+            color: white;
+            padding: 16px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 27%;
+            opacity: 0.9;
+            font-size: 18px;
+        }
+
+        hr {
+            width: 27%;
+            margin-left: 0;
+        }
+
+        p {
+            position: relative;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            left: 100px;
+        }
+    </style>
+</head>
+<body>
+    <form action="/login" method="post">
+        <h1>Login</h1>
+        <hr>
+
+        <label for="name"><b>Username</b></label>
+        <input type="text" placeholder="Enter the username" name="name" id="name" required>
+
+        <label for="pwd">Password</label>
+        <input type="password" name="pwd" id="pwd" placeholder="Enter password" required>
+        <hr>
+
+        <button type="submit">Login</button>
+    </form>
+    {{ if .Success }}
+    <p>{{ .Success }}</p>
+    {{ end }}
+</body>
+</html>
