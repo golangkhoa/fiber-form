@@ -1,15 +1,15 @@
 package main
 
 import (
+	"crypto/sha512"
 	"database/sql"
+	"encoding/hex"
 	"fmt"
 	"github.com/glebarez/sqlite"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 	_ "github.com/mattn/go-sqlite3"
 	"gorm.io/gorm"
-	"crypto/sha512"
-	"encoding/hex"
 )
 
 type User struct {
@@ -36,10 +36,12 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
+
 	Encrptedusername := sha512.Sum512([]byte(user.Username))
 	Encryptedpassword := sha512.Sum512([]byte(user.Password))
 	fmt.Println(Encrptedusername)
 	fmt.Println(Encryptedpassword)
+
 	db, err := sql.Open("sqlite3", "user.db")
 	if err != nil {
 		panic("failed to open database")
@@ -86,7 +88,7 @@ func main() {
 		if UserExists(db, hex.EncodeToString(Encrptedusername[:])) {
 			readDB.First(&user, "username = ?", user.Username)
 			readDB.First(&user, "password = ?", user.Password)
-			
+
 			return c.Render("login", fiber.Map{
 				"Success": "Login Succussful",
 			})
