@@ -17,6 +17,7 @@ type User struct {
 	Password string `form:"pwd"`
 }
 
+// Checks if the user exists in the database
 func UserExists(db *sql.DB, username string) bool {
 	sqlStmt := `SELECT username FROM users WHERE username = ?`
 	var u string
@@ -30,6 +31,8 @@ func UserExists(db *sql.DB, username string) bool {
 	return true
 }
 
+// Does other things such as: Loading template files,
+// encrypting username and password, etc.
 func main() {
 	var user User
 	engine := html.New("./views", ".tmpl")
