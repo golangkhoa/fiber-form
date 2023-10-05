@@ -8,6 +8,8 @@ import (
 	"github.com/gofiber/template/html/v2"
 	_ "github.com/mattn/go-sqlite3"
 	"gorm.io/gorm"
+	"crypto/sha512"
+	"encoding/hex"
 )
 
 type User struct {
@@ -34,7 +36,14 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
+	Encrptedusername := sha512.Sum512([]byte(user.Username))
+	Encryptedpassword := sha512.Sum512([]byte(user.Password))
+	fmt.Println(Encrptedusername)
+	fmt.Println(Encryptedpassword)
 	db, err := sql.Open("sqlite3", "user.db")
+	if err != nil {
+		panic("failed to open database")
+	}
 	defer db.Close()
 	readDB, errDB := gorm.Open(sqlite.Open("user.db"), &gorm.Config{})
 	if err != nil {
@@ -54,17 +63,19 @@ func main() {
 			return err
 		}
 
-		if !UserExists(db, user.Username) {
+		if !UserExists(db, hex.EncodeToString(Encrptedusername[:])) {
 			insert, _ := db.Prepare("INSERT INTO users (username, password) VALUES (?, ?)")
-			_, err = insert.Exec(user.Username, user.Password)
+			_, err = insert.Exec(hex.EncodeToString(Encrptedusername[:]), hex.EncodeToString(Encryptedpassword[:]))
 			if err != nil {
 				fmt.Println(err)
 			}
+
+			return c.Render("signup", fiber.Map{
+				"Success": "Signup Succussful",
+			})
 		}
 
-		return c.Render("signup", fiber.Map{
-			"Success": "Signup Succussful",
-		})
+		return c.Render("signup", fiber.Map{})
 	})
 
 	app.Post("/login", func(c *fiber.Ctx) error {
@@ -72,7 +83,7 @@ func main() {
 			return err
 		}
 
-		if UserExists(db, user.Username) {
+		if UserExists(db, hex.EncodeToString(Encrptedusername[:])) {
 			readDB.First(&user, "username = ?", user.Username)
 			readDB.First(&user, "password = ?", user.Password)
 			
